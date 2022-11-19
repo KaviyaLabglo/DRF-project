@@ -101,9 +101,6 @@ class info(mixins.ListModelMixin,
 
 class UserDetailAPI(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
-    #renderer_classes  = [StaticHTMLRenderer]
-   # media_type = 'multipart/form-data'
-
     def get(self, request, *args, **kwargs):
         user = User.objects.get(id=request.user.id)
         detail = userdetail.objects.get(user=user)

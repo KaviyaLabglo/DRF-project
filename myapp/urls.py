@@ -3,8 +3,7 @@ from myapp.views import *
 from django.urls import path
 
 
-from myapp.views import ChangePasswordView
-from rest_framework_simplejwt.views import TokenRefreshView
+
 
 
 
