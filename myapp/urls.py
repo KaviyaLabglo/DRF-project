@@ -3,6 +3,11 @@ from myapp.views import *
 from django.urls import path
 
 
+from myapp.views import ChangePasswordView
+from rest_framework_simplejwt.views import TokenRefreshView
+
+
+
 urlpatterns = [
     # User login & register
     path('register', RegisterUserAPIView.as_view(), name="register"),
@@ -17,7 +22,9 @@ urlpatterns = [
     path('info/<int:pk>/', infodetails.as_view(), name='info-detail'),
 
     # Login User Detail
-    path('loginuser-detail/', UserDetailAPI.as_view())
+    path('loginuser-detail/', UserDetailAPI.as_view()),
+    # Change the user password 
+    path('change_password/<int:pk>/', ChangePasswordView.as_view(), name='auth_change_password'),
 
 
 ]
