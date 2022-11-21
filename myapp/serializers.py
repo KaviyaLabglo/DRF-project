@@ -9,8 +9,7 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers
 
-
-from myapp.models import *
+from myapp.models import User_Detail
 
 
 class LoginSerializer(serializers.Serializer):
@@ -80,7 +79,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class DetailSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = userdetail
+        model = User_Detail
         fields = ["user", "profile_picture", "phone",
                   "about_me",  "date_of_birth",  "gender"]
         
