@@ -1,11 +1,11 @@
 
 from myapp.views import (User_Detail_ViewSet,
-                         RegisterUserAPIView,
-                         LoginView,
-                         LogoutView,
-                         UserDetailAPI,
-                         ChangePasswordView,
-                         )
+    RegisterUserAPIView,
+    LoginView,
+    LogoutView,
+    UserDetailAPI,
+    ChangePasswordView,
+    )
 from django.urls import path, include
 
 
@@ -18,12 +18,11 @@ router.register(r'user-information', User_Detail_ViewSet)
 
 
 urlpatterns = [
+    
     # User login & register
     path('register', RegisterUserAPIView.as_view(), name="register"),
     path('log/', LoginView.as_view()),
     path('logout/', LogoutView.as_view()),
-
-
 
     # Login User Detail
     path('loginuser-detail/', UserDetailAPI.as_view()),
@@ -32,6 +31,5 @@ urlpatterns = [
          name='auth_change_password'),
 
     path('', include(router.urls)),
-
 
 ]

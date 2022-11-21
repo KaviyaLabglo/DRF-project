@@ -1,32 +1,31 @@
-from django.shortcuts import render
-from rest_framework.authentication import TokenAuthentication
-from django.contrib.auth import login, logout
-
-from myapp.models import User_Detail
 from django.contrib.auth.models import User
+from django.contrib.auth import login, logout
 from django.contrib.auth import authenticate
-from myapp.serializers import (LoginSerializer,
-                               ChangePasswordSerializer,
-                               RegisterSerializer,
-                               UserSerializer,
-                               DetailSerializer,
-                               )
 
-from myapp.permission import *
+from myapp.serializers import (
+    LoginSerializer,
+    ChangePasswordSerializer,
+    RegisterSerializer,
+    UserSerializer,
+    DetailSerializer,
+)
+from myapp.permission import IsOwnerOrReadOnly
+from myapp.models import User_Detail
 
-from rest_framework import generics, mixins, views, viewsets
+from rest_framework import generics, views, viewsets
 from rest_framework.views import APIView
 
 from rest_framework.response import Response
 from rest_framework import status
 
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 
 from rest_framework import filters
-
+ 
 
 class LoginView(views.APIView):
     authentication_classes = (TokenAuthentication,)
@@ -68,7 +67,6 @@ class RegisterUserAPIView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
 
-
 class UserDetailAPI(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]
@@ -81,15 +79,11 @@ class UserDetailAPI(APIView):
         return Response(serializer.data)
 
 
-
-
-
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['username']
-
 
 
 class User_Detail_ViewSet(viewsets.ModelViewSet):
