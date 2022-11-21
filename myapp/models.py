@@ -2,18 +2,20 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class userdetail(models.Model):
+GENDER_MALE = 'male'
+GENDER_FEMALE = 'female'
+GENDER_OTHER = 'other'
+GENDER_NOT_SPECIFIED = 'not specified'
+GENDER_CHOICES = (
+    (GENDER_MALE, 'Male'),
+    (GENDER_FEMALE, 'Female'),
+    (GENDER_OTHER, 'Other'),
+    (GENDER_NOT_SPECIFIED, 'Not specified'),
+)
+
+
+class User_Detail(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    GENDER_MALE = 'male'
-    GENDER_FEMALE = 'female'
-    GENDER_OTHER = 'other'
-    GENDER_NOT_SPECIFIED = 'not specified'
-    GENDER_CHOICES = (
-        (GENDER_MALE, 'Male'),
-        (GENDER_FEMALE, 'Female'),
-        (GENDER_OTHER, 'Other'),
-        (GENDER_NOT_SPECIFIED, 'Not specified'),
-    )
     phone = models.CharField(max_length=20, default='',
                              blank=True, unique=True)
     about_me = models.TextField(blank=True, default='', max_length=10000)

@@ -1,12 +1,20 @@
 from django.shortcuts import render
 from rest_framework.authentication import TokenAuthentication
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 
-from myapp.models import *
-from myapp.serializers import *
+from myapp.models import User_Detail
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from myapp.serializers import (LoginSerializer,
+                               ChangePasswordSerializer,
+                               RegisterSerializer,
+                               UserSerializer,
+                               DetailSerializer,
+                               )
+
 from myapp.permission import *
 
-from rest_framework import generics, mixins, views
+from rest_framework import generics, mixins, views, viewsets
 from rest_framework.views import APIView
 
 from rest_framework.response import Response
@@ -20,14 +28,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework import filters
 
 
-class RegisterUserAPIView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = RegisterSerializer
-
-
 class LoginView(views.APIView):
-    #renderer_classes = [StaticHTMLRenderer]
-
     authentication_classes = (TokenAuthentication,)
     serializer_class = LoginSerializer
 
@@ -47,92 +48,52 @@ class LoginView(views.APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class Userlist(mixins.ListModelMixin,
-               mixins.CreateModelMixin,
-               generics.GenericAPIView):
+class LogoutView(views.APIView):
+    authentication_classes = (TokenAuthentication,)
+
+    def post(self, request, format=None):
+        print(request.user)
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
+
+
+class ChangePasswordView(generics.UpdateAPIView):
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
-    filter_backends = [filters.SearchFilter]
-    search_class = ['id']
-
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['id']
-    serializer_class = UserSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ChangePasswordSerializer
 
 
-class Userdetails(mixins.RetrieveModelMixin,
-                  mixins.UpdateModelMixin,
-                  mixins.DestroyModelMixin,
-                  generics.GenericAPIView):
+class RegisterUserAPIView(generics.CreateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = RegisterSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-
-class info(mixins.ListModelMixin,
-           mixins.CreateModelMixin,
-           generics.GenericAPIView):
-    queryset = userdetail.objects.all()
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnly]
-    serializer_class = DetailSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
 
 
 class UserDetailAPI(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly]
     authentication_classes = [SessionAuthentication, BasicAuthentication]
+
     def get(self, request, *args, **kwargs):
         user = User.objects.get(id=request.user.id)
-        detail = userdetail.objects.get(user=user)
+        detail = User_Detail.objects.get(user=user)
         serializer = DetailSerializer(detail, context={'request': request})
         return Response(serializer.data)
 
 
-class infodetails(mixins.RetrieveModelMixin,
-                  mixins.UpdateModelMixin,
-                  mixins.DestroyModelMixin,
-                  generics.GenericAPIView):
-    queryset = userdetail.objects.all()
-    serializer_class = DetailSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-    
-    
 
 
-    
-    
-from rest_framework.permissions import IsAuthenticated
 
-class ChangePasswordView(generics.UpdateAPIView):
-
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = (IsAuthenticated,)
-    serializer_class = ChangePasswordSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['username']
+
+
+
+class User_Detail_ViewSet(viewsets.ModelViewSet):
+    serializer_class = DetailSerializer
+    queryset = User_Detail.objects.all()
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['user']
