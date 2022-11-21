@@ -1,11 +1,11 @@
 
 from myapp.views import (User_Detail_ViewSet,
-                     RegisterUserAPIView,
-                         LoginView,
-                         LogoutView,
-                         UserDetailAPI,
-                         ChangePasswordView,
-                         )
+    RegisterUserAPIView,
+    LoginView,
+    LogoutView,
+    UserDetailAPI,
+    ChangePasswordView,
+    )
 from django.urls import path, include
 
 
