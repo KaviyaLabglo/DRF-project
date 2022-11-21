@@ -80,6 +80,8 @@ class UserDetailAPI(APIView):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly]
     serializer_class = UserSerializer
     queryset = User.objects.all()
     filter_backends = [filters.OrderingFilter]
@@ -87,6 +89,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class User_Detail_ViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly]
     serializer_class = DetailSerializer
     queryset = User_Detail.objects.all()
     filter_backends = [filters.OrderingFilter]
