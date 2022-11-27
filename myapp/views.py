@@ -79,6 +79,11 @@ class UserDetailAPI(APIView):
         return Response(serializer.data)
 
 
+
+
+
+
+
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]
@@ -95,3 +100,4 @@ class User_Detail_ViewSet(viewsets.ModelViewSet):
     queryset = User_Detail.objects.all()
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['user']
+    print('Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
